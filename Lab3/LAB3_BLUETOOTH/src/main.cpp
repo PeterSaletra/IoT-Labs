@@ -40,29 +40,19 @@ void setup() {
 }
  
 void loop() {
-  // Check for messsage from serial monitor.
-  if (Serial.available()) {
-    // Write message to paired Bluetooth device.
-    buffer = Serial.read();
-    Serial.println(buffer);
-    SerialBT.write((uint8_t*)&buffer, 1);
-  }
+  // Check for message from serial monitor.
   
-  // Check for message from paired Bluetooth device.
-  if (SerialBT.available()) {
-    // Write message to serial monitor.
-    buffer = SerialBT.read();
-
-    if(buffer == '1'){
-      digitalWrite(LED_BUILTIN, LOW);
-    } else if(buffer == '0'){
-      digitalWrite(LED_BUILTIN, HIGH);
+  // Scan for available Bluetooth devices.
+  BTScanResults* results = SerialBT.discover();
+  int numDevices = results->getCount();
+  if (numDevices > 0) {
+    Serial.printf("Found %d devices:\n", numDevices);
+    for (int i = 0; i < numDevices; i++) {
+      BTAdvertisedDevice* device = results->getDevice(i);
+      Serial.printf("Device %d: %s [%s]\n", i + 1, device->getName().c_str(), device->getAddress().toString().c_str());
     }
-    
-    Serial.println(buffer);
-    SerialBT.write((uint8_t*)&buffer, 1);
+  } else {
+    Serial.println("No devices found.");
   }
-
-
-  delay(20);
+  delay(5000); // Wait for 5 seconds before scanning again
 }
