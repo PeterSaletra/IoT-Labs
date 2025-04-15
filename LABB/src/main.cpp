@@ -40,7 +40,7 @@ void setup() {
   pinMode(2, OUTPUT);
   SerialBT.begin("ESP32"); //Bluetooth device name
   WiFi.mode(WIFI_STA);
-  WiFi.begin("net-g", "E3d2y1t0a-");
+  WiFi.begin("", "");
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
